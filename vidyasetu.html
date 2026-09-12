@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VidyaSetu — Bridging Academia & Industry</title>
+<style>
+/* ============================= DESIGN TOKENS ============================= */
+:root{
+  --ink:#0F1A2E;
+  --ink-soft:#3A4A63;
+  --paper:#F5F6F3;
+  --paper-raised:#FFFFFF;
+  --line:#E2E5E4;
+  --teal:#0E8F82;
+  --teal-deep:#0A6E64;
+  --teal-tint:#E3F3F1;
+  --amber:#D98E3B;
+  --amber-tint:#FBEEDD;
+  --danger:#C4453A;
+  --danger-tint:#FBE9E7;
+  --violet:#5B5FEF;
+  --violet-tint:#ECEDFD;
+  --radius-sm:8px;
+  --radius-md:14px;
+  --radius-lg:22px;
+  --shadow-1: 0 1px 2px rgba(15,26,46,0.06), 0 1px 1px rgba(15,26,46,0.04);
+  --shadow-2: 0 8px 24px rgba(15,26,46,0.08);
+  --font-display:-apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:-apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+[data-theme="dark"]{
+  --ink:#EDF0F5;
+  --ink-soft:#9AA7BD;
+  --paper:#0B1220;
+  --paper-raised:#131C2E;
+  --line:#212C42;
+  --teal:#33C6B4;
+  --teal-deep:#28A897;
+  --teal-tint:#0F2B29;
+  --amber:#E8A857;
+  --amber-tint:#2C2213;
+  --danger:#E5726A;
+  --danger-tint:#2E1715;
+  --violet:#8A8EF5;
+  --violet-tint:#1B1C36;
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-2: 0 8px 28px rgba(0,0,0,0.45);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  transition:background .25s ease, color .25s ease;
+}
+h1,h2,h3,h4{font-family:var(--font-display); margin:0; letter-spacing:-0.01em;}
+p{margin:0;}
+a{color:inherit;text-decoration:none;}
+button{font-family:var(--font-body); cursor:pointer;}
+::selection{background:var(--teal-tint); color:var(--teal-deep);}
+.mono{font-family:var(--font-mono);}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;}
+
+/* ============================= UTILITIES ============================= */
+.container{max-width:1200px;margin:0 auto;padding:0 28px;}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 20px;border-radius:10px;border:1px solid transparent;
+  font-weight:600;font-size:14.5px;transition:all .15s ease;white-space:nowrap;
+}
+.btn-primary{background:var(--ink);color:var(--paper);}
+[data-theme="dark"] .btn-primary{background:var(--teal);color:#06120F;}
+.btn-primary:hover{opacity:.88; transform:translateY(-1px);}
+.btn-outline{background:transparent;border-color:var(--line);color:var(--ink);}
+.btn-outline:hover{border-color:var(--ink-soft);}
+.btn-teal{background:var(--teal);color:#fff;}
+[data-theme="dark"] .btn-teal{color:#06120F;}
+.btn-teal:hover{background:var(--teal-deep);}
+.btn-sm{padding:7px 13px;font-size:13px;border-radius:8px;}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:100px;font-size:12.5px;font-weight:600;}
+.pill-teal{background:var(--teal-tint);color:var(--teal-deep);}
+[data-theme="dark"] .pill-teal{color:var(--teal);}
+.pill-amber{background:var(--amber-tint);color:#8A5A19;}
+[data-theme="dark"] .pill-amber{color:var(--amber);}
+.pill-danger{background:var(--danger-tint);color:var(--danger);}
+.pill-violet{background:var(--violet-tint);color:var(--violet);}
+.pill-neutral{background:var(--paper);border:1px solid var(--line);color:var(--ink-soft);}
+.card{background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius-md);box-shadow:var(--shadow-1);}
+.card-pad{padding:22px;}
+.eyebrow{font-size:12.5px;font-weight:600;color:var(--ink-soft);}
+.divider{height:1px;background:var(--line);border:none;margin:0;}
+.grid{display:grid;gap:16px;}
+.g2{grid-template-columns:repeat(2,1fr);}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:980px){.g4{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.g4,.g3,.g2{grid-template-columns:1fr;}}
+.flex{display:flex;}
+.between{justify-content:space-between;}
+.center{align-items:center;}
+.gap8{gap:8px;} .gap12{gap:12px;} .gap16{gap:16px;} .gap20{gap:20px;}
+.wrap{flex-wrap:wrap;}
+.muted{color:var(--ink-soft);}
+.small{font-size:13px;}
+.progress-track{height:8px;border-radius:100px;background:var(--line);overflow:hidden;}
+.progress-fill{height:100%;border-radius:100px;background:var(--teal);}
+.skel{background:linear-gradient(90deg, var(--line) 25%, var(--paper) 50%, var(--line) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:8px;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.fade-in{animation:fadeIn .35s ease both;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.hidden{display:none !important;}
+.badge-num{font-family:var(--font-display);font-weight:800;}
+
+/* ============================= LANDING PAGE ============================= */
+#landing{display:none;}
+.nav-top{position:sticky;top:0;z-index:40;background:color-mix(in srgb, var(--paper) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.nav-top-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;max-width:1200px;margin:0 auto;}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:19px;}
+.brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--violet));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0;}
+.nav-links{display:flex;gap:28px;font-size:14.5px;font-weight:500;color:var(--ink-soft);}
+.nav-links a:hover{color:var(--ink);}
+@media(max-width:860px){.nav-links{display:none;}}
+
+.hero{padding:88px 28px 60px;max-width:1200px;margin:0 auto;}
+.hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:60px;align-items:center;}
+@media(max-width:980px){.hero-grid{grid-template-columns:1fr;gap:40px;} .hero{padding:48px 20px 40px;}}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--teal-deep);background:var(--teal-tint);margin-bottom:22px;}
+[data-theme="dark"] .hero-eyebrow{color:var(--teal);}
+.hero h1{font-size:clamp(38px,5.2vw,60px);line-height:1.03;font-weight:800;}
+.hero .tagline{font-family:var(--font-display);font-weight:600;font-size:20px;color:var(--teal-deep);margin-top:14px;}
+[data-theme="dark"] .hero .tagline{color:var(--teal);}
+.hero p.lead{margin-top:18px;font-size:17px;line-height:1.6;color:var(--ink-soft);max-width:520px;}
+.hero-ctas{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;}
+.hero-stats{display:flex;gap:32px;margin-top:44px;flex-wrap:wrap;}
+.hero-stat b{font-family:var(--font-display);font-size:26px;display:block;}
+.hero-stat span{font-size:12.5px;color:var(--ink-soft);}
+
+.flowviz{background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius-lg);padding:30px 24px;box-shadow:var(--shadow-2);}
+.flow-node{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--line);margin-bottom:10px;background:var(--paper);}
+.flow-node .dot{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.flow-node b{font-size:14.5px;display:block;}
+.flow-node span{font-size:12.5px;color:var(--ink-soft);}
+.flow-arrow{text-align:center;color:var(--ink-soft);font-size:13px;padding:2px 0;}
+
+.section{padding:72px 28px;max-width:1200px;margin:0 auto;}
+.section-head{max-width:640px;margin-bottom:40px;}
+.section-head .eyebrow{color:var(--teal-deep);}
+[data-theme="dark"] .section-head .eyebrow{color:var(--teal);}
+.section-head h2{font-size:clamp(26px,3vw,36px);margin-top:8px;}
+.section-head p{margin-top:12px;color:var(--ink-soft);font-size:16px;line-height:1.6;}
+.section-alt{background:var(--paper-raised);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:760px){.problem-grid{grid-template-columns:1fr;}}
+.problem-card{padding:24px;border-radius:var(--radius-md);border:1px solid var(--line);}
+.problem-card.bad{background:var(--danger-tint);}
+.problem-card.good{background:var(--teal-tint);}
+
+.audience-card{padding:24px;}
+.audience-card .dot{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:16px;}
+.audience-card ul{margin:14px 0 0;padding-left:18px;color:var(--ink-soft);font-size:14px;line-height:1.9;}
+
+.evidence-demo{padding:26px;}
+.evidence-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);}
+.evidence-row:last-child{border-bottom:none;}
+.evidence-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);}
+
+.radar-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;}
+@media(max-width:760px){.radar-card-grid{grid-template-columns:1fr;}}
+
+.impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center;}
+@media(max-width:760px){.impact-grid{grid-template-columns:repeat(2,1fr);}}
+.impact-num{font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--teal-deep);}
+[data-theme="dark"] .impact-num{color:var(--teal);}
+
+.final-cta{border-radius:var(--radius-lg);background:linear-gradient(135deg, var(--ink), #23324F);color:#fff;padding:56px 40px;text-align:center;}
+[data-theme="dark"] .final-cta{background:linear-gradient(135deg,#0A6E64,#12203A);}
+.final-cta h2{color:#fff;font-size:clamp(24px,3vw,34px);}
+.final-cta p{color:#B9C3D6;margin-top:10px;}
+.final-cta .hero-ctas{justify-content:center;margin-top:26px;}
+
+footer{padding:40px 28px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:13px;text-align:center;}
+.disclaimer-note{font-size:12px;color:var(--ink-soft);margin-top:6px;font-style:italic;}
+
+/* ============================= ROLE PICKER ============================= */
+#roleSelect{display:none;min-height:100vh;align-items:center;justify-content:center;padding:40px 20px;}
+.role-wrap{max-width:900px;width:100%;}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px;}
+@media(max-width:760px){.role-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.role-grid{grid-template-columns:1fr;}}
+.role-card{padding:22px;text-align:left;border:1px solid var(--line);background:var(--paper-raised);border-radius:var(--radius-md);transition:all .15s ease;}
+.role-card:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:var(--shadow-2);}
+.role-card .dot{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px;}
+.role-card b{font-family:var(--font-display);font-size:16px;display:block;margin-bottom:4px;}
+.role-card span{font-size:13px;color:var(--ink-soft);}
+
+/* ============================= APP SHELL ============================= */
+#app{display:none;min-height:100vh;}
+.shell{display:flex;min-height:100vh;}
+.sidebar{width:248px;flex-shrink:0;background:var(--paper-raised);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+.sidebar-brand{padding:20px 22px;display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:17px;border-bottom:1px solid var(--line);}
+.sidebar-role{padding:14px 22px;font-size:12px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 22px;font-size:14.5px;font-weight:500;color:var(--ink-soft);border-left:3px solid transparent;transition:all .12s ease;}
+.nav-item:hover{background:var(--paper);color:var(--ink);}
+.nav-item.active{color:var(--teal-deep);background:var(--teal-tint);border-left-color:var(--teal);font-weight:600;}
+[data-theme="dark"] .nav-item.active{color:var(--teal);}
+.nav-item .ic{width:18px;text-align:center;flex-shrink:0;}
+.sidebar-foot{margin-top:auto;padding:16px 22px;border-top:1px solid var(--line);}
+.switch-role-link{font-size:12.5px;color:var(--ink-soft);}
+.switch-role-link:hover{color:var(--teal-deep);}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb, var(--paper) 90%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.search-box{flex:1;max-width:380px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:14px;color:var(--ink-soft);}
+.topbar-actions{display:flex;align-items:center;gap:14px;}
+.icon-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--paper-raised);display:flex;align-items:center;justify-content:center;font-size:15px;position:relative;}
+.icon-btn:hover{border-color:var(--ink-soft);}
+.notif-dot{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--danger);}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--violet));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;}
+.content{padding:26px 28px 100px;flex:1;}
+
+/* mobile nav */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--paper-raised);border-top:1px solid var(--line);z-index:40;padding:8px 4px;}
+.mobile-nav-inner{display:flex;justify-content:space-around;}
+.mnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--ink-soft);padding:4px 6px;flex:1;}
+.mnav-item.active{color:var(--teal-deep);}
+[data-theme="dark"] .mnav-item.active{color:var(--teal);}
+@media(max-width:860px){
+  .sidebar{display:none;}
+  .mobile-nav{display:block;}
+  .content{padding:18px 16px 90px;}
+  .topbar{padding:12px 16px;}
+  .search-box{display:none;}
+}
+
+/* dashboard bits */
+.stat-card{padding:20px;}
+.stat-card .top{display:flex;justify-content:space-between;align-items:flex-start;}
+.stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.stat-val{font-family:var(--font-display);font-weight:800;font-size:30px;margin-top:14px;}
+.stat-label{font-size:13px;color:var(--ink-soft);margin-top:2px;}
+.stat-trend{font-size:12px;font-weight:600;margin-top:8px;}
+
+.hero-move{background:linear-gradient(135deg, var(--ink), #23324F);color:#fff;border-radius:var(--radius-lg);padding:28px;position:relative;overflow:hidden;}
+[data-theme="dark"] .hero-move{background:linear-gradient(135deg,#0A6E64,#152238);}
+.hero-move .eyebrow{color:#9FB0CC;}
+.hero-move h3{color:#fff;font-size:24px;margin-top:8px;}
+.hero-move .metrics{display:flex;gap:34px;margin-top:20px;flex-wrap:wrap;}
+.hero-move .metrics b{font-family:var(--font-display);font-size:22px;display:block;}
+.hero-move .metrics span{font-size:12px;color:#AEBBD1;}
+.hero-move .btn{margin-top:22px;}
+
+.skill-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+.skill-row:last-child{border-bottom:none;}
+.skill-name{width:140px;flex-shrink:0;font-weight:600;font-size:14px;}
+.skill-bar{flex:1;}
+.skill-score{width:44px;text-align:right;font-family:var(--font-display);font-weight:700;font-size:15px;flex-shrink:0;}
+
+.tab-row{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;}
+.tab-btn{padding:10px 16px;font-size:14px;font-weight:600;color:var(--ink-soft);border-bottom:2px solid transparent;white-space:nowrap;}
+.tab-btn.active{color:var(--ink);border-bottom-color:var(--teal);}
+
+.evidence-tag{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;padding:4px 10px;border-radius:100px;background:var(--teal-tint);color:var(--teal-deep);margin:3px 4px 3px 0;}
+[data-theme="dark"] .evidence-tag{color:var(--teal);}
+
+.opp-card{padding:22px;}
+.opp-match{width:52px;height:52px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--teal-tint);color:var(--teal-deep);font-weight:800;font-size:14px;font-family:var(--font-display);border:2px solid var(--teal);}
+[data-theme="dark"] .opp-match{color:var(--teal);}
+.chip-missing{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;padding:4px 10px;border-radius:100px;background:var(--amber-tint);color:#8A5A19;margin:3px 4px 3px 0;}
+[data-theme="dark"] .chip-missing{color:var(--amber);}
+
+.collab-card{padding:20px;}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
+
+.heatcell{width:100%;aspect-ratio:1.3;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
+.empty-state .ic{font-size:34px;margin-bottom:14px;}
+
+/* AI Assistant */
+#askVidyaBtn{position:fixed;bottom:26px;right:26px;z-index:60;display:flex;align-items:center;gap:9px;padding:14px 20px;border-radius:100px;background:var(--ink);color:#fff;border:none;box-shadow:var(--shadow-2);font-weight:700;font-size:14.5px;}
+[data-theme="dark"] #askVidyaBtn{background:var(--teal);color:#06120F;}
+@media(max-width:860px){#askVidyaBtn{bottom:76px;right:16px;padding:12px 16px;}}
+#aiPanel{position:fixed;bottom:26px;right:26px;width:400px;max-width:92vw;max-height:76vh;background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-2);z-index:70;display:none;flex-direction:column;overflow:hidden;}
+@media(max-width:860px){#aiPanel{bottom:0;right:0;left:0;width:100%;max-width:100%;border-radius:18px 18px 0 0;max-height:82vh;}}
+.ai-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;background:linear-gradient(135deg, var(--teal-tint), transparent);}
+.ai-head b{font-family:var(--font-display);font-size:15.5px;}
+.ai-head span{font-size:12px;color:var(--ink-soft);}
+.ai-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
+.ai-msg{max-width:88%;padding:11px 14px;border-radius:14px;font-size:13.8px;line-height:1.55;}
+.ai-msg.bot{background:var(--paper);align-self:flex-start;border:1px solid var(--line);}
+.ai-msg.user{background:var(--ink);color:#fff;align-self:flex-end;}
+[data-theme="dark"] .ai-msg.user{background:var(--teal);color:#06120F;}
+.ai-suggest{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);font-size:13px;margin-bottom:7px;color:var(--ink-soft);}
+.ai-suggest:hover{border-color:var(--teal);color:var(--ink);}
+.ai-source{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;padding:2px 8px;border-radius:100px;background:var(--violet-tint);color:var(--violet);margin-top:8px;font-weight:600;}
+.ai-input-row{padding:12px;border-top:1px solid var(--line);display:flex;gap:8px;}
+.ai-input-row input{flex:1;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:10px 14px;font-size:13.8px;color:var(--ink);}
+.ai-input-row input:focus{outline:none;border-color:var(--teal);}
+.ai-send{width:38px;height:38px;border-radius:10px;background:var(--ink);color:#fff;border:none;flex-shrink:0;}
+[data-theme="dark"] .ai-send{background:var(--teal);color:#06120F;}
+
+/* theme toggle */
+.theme-toggle{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--paper-raised);display:flex;align-items:center;justify-content:center;font-size:15px;}
+
+/* modal for candidate/opportunity detail */
+.overlay{position:fixed;inset:0;background:rgba(10,15,25,.5);z-index:80;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal{background:var(--paper-raised);border-radius:var(--radius-lg);max-width:560px;width:100%;max-height:86vh;overflow-y:auto;padding:28px;border:1px solid var(--line);}
+
+/* simulator */
+.sim-select-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.sim-chip{padding:9px 16px;border-radius:10px;border:1px solid var(--line);font-size:13.5px;font-weight:600;background:var(--paper-raised);}
+.sim-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+[data-theme="dark"] .sim-chip.active{background:var(--teal);color:#06120F;}
+.sim-result{margin-top:22px;padding:24px;border-radius:var(--radius-md);background:var(--teal-tint);border:1px solid var(--teal);}
+.sim-result .big{font-family:var(--font-display);font-weight:800;font-size:32px;color:var(--teal-deep);}
+[data-theme="dark"] .sim-result .big{color:var(--teal);}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ LANDING PAGE ============================================================ -->
+<div id="landing">
+  <div class="nav-top">
+    <div class="nav-top-inner">
+      <div class="brand"><div class="brand-mark">VS</div>VidyaSetu</div>
+      <div class="nav-links">
+        <a href="#solution">Solution</a>
+        <a href="#audience">Who it's for</a>
+        <a href="#intelligence">Skill Intelligence</a>
+        <a href="#ai">VidyaSetu AI</a>
+      </div>
+      <div class="flex gap12 center">
+        <button class="theme-toggle" onclick="toggleTheme()" id="landingThemeBtn">🌙</button>
+        <button class="btn btn-outline btn-sm" onclick="goToRoleSelect()">Sign in</button>
+        <button class="btn btn-primary btn-sm" onclick="goToRoleSelect()">Explore VidyaSetu</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">🇮🇳 Built for India's academia–industry ecosystem</div>
+        <h1>The bridge between<br>what academia teaches<br>and what industry needs.</h1>
+        <div class="tagline">Bridging Academia & Industry</div>
+        <p class="lead">VidyaSetu is an intelligent ecosystem connecting academic capability with real-world industry demand — through evidence-driven skill intelligence, not self-reported resumes.</p>
+        <div class="hero-ctas">
+          <button class="btn btn-primary" onclick="goToRoleSelect()">Explore VidyaSetu →</button>
+          <button class="btn btn-outline" onclick="document.getElementById('solution').scrollIntoView({behavior:'smooth'})">See how it works</button>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><b>4</b><span>Connected stakeholder roles</span></div>
+          <div class="hero-stat"><b>1,240+</b><span>Verified skill records (demo)</span></div>
+          <div class="hero-stat"><b>93%</b><span>Avg. evidence confidence</span></div>
+        </div>
+      </div>
+      <div class="flowviz fade-in">
+        <div class="flow-node"><div class="dot" style="background:var(--violet-tint);color:var(--violet);">🎓</div><div><b>Academia</b><span>Curriculum, faculty expertise, research</span></div></div>
+        <div class="flow-arrow">↓ produces</div>
+        <div class="flow-node"><div class="dot" style="background:var(--teal-tint);color:var(--teal-deep);">🧩</div><div><b>Skills</b><span>Verified, evidence-backed competencies</span></div></div>
+        <div class="flow-arrow">↓ interpreted by</div>
+        <div class="flow-node"><div class="dot" style="background:var(--amber-tint);color:#8A5A19;">✨</div><div><b>Intelligence</b><span>Skill-gap &amp; demand-mapping engine</span></div></div>
+        <div class="flow-arrow">↓ aligned with</div>
+        <div class="flow-node"><div class="dot" style="background:var(--danger-tint);color:var(--danger);">🏭</div><div><b>Industry</b><span>Real hiring &amp; project demand signals</span></div></div>
+        <div class="flow-arrow">↓ unlocking</div>
+        <div class="flow-node" style="margin-bottom:0;"><div class="dot" style="background:var(--teal);color:#fff;">🚀</div><div><b>Opportunities</b><span>Jobs, internships, projects, research</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="solution">
+    <div class="section-head">
+      <div class="eyebrow">THE PROBLEM &amp; THE FIX</div>
+      <h2>Talent and demand rarely speak the same language.</h2>
+      <p>Institutions teach at scale. Industry hires for specific, evolving capability. Between them sits a gap that resumes and grade sheets can't close.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card bad">
+        <div class="eyebrow" style="color:var(--danger);">THE PROBLEM</div>
+        <h3 style="margin-top:10px;font-size:19px;">Skill claims without evidence</h3>
+        <p class="muted small" style="margin-top:10px;line-height:1.7;">Resumes list "Python — Advanced" with no way to verify it. Institutions can't see real placement readiness. Industry can't see which colleges actually produce job-ready talent in a given skill.</p>
+      </div>
+      <div class="problem-card good">
+        <div class="eyebrow" style="color:var(--teal-deep);">THE VIDYASETU SOLUTION</div>
+        <h3 style="margin-top:10px;font-size:19px;">Evidence-driven skill intelligence</h3>
+        <p class="muted small" style="margin-top:10px;line-height:1.7;">Every skill is backed by assessments, projects, certifications and industry feedback — giving students, faculty, institutions and industry one shared, trustworthy signal.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="audience">
+    <div class="section-head">
+      <div class="eyebrow">ONE PLATFORM, FOUR STAKEHOLDERS</div>
+      <h2>Built for everyone who moves talent forward.</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card audience-card"><div class="dot" style="background:var(--teal-tint);color:var(--teal-deep);">🎓</div><b>For Students</b><span class="muted small">Verified skill profile &amp; growth</span><ul><li>Skill-gap analysis</li><li>Career impact simulator</li><li>Internships &amp; jobs</li><li>Digital portfolio</li></ul></div>
+      <div class="card audience-card"><div class="dot" style="background:var(--violet-tint);color:var(--violet);">🧑‍🏫</div><b>For Faculty</b><span class="muted small">Research &amp; industry reach</span><ul><li>Consultancy &amp; FDPs</li><li>Research collaboration</li><li>Mentorship</li><li>Industry projects</li></ul></div>
+      <div class="card audience-card"><div class="dot" style="background:var(--amber-tint);color:#8A5A19;">🏛️</div><b>For Institutions</b><span class="muted small">Placement &amp; skill intelligence</span><ul><li>Skill heatmaps</li><li>Intervention simulator</li><li>Industry partnerships</li><li>Readiness analytics</li></ul></div>
+      <div class="card audience-card"><div class="dot" style="background:var(--danger-tint);color:var(--danger);">🏭</div><b>For Industry</b><span class="muted small">Verified talent, faster</span><ul><li>Talent search</li><li>Skill-demand radar</li><li>Campus collaboration</li><li>Training programs</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="intelligence">
+    <div class="section-head">
+      <div class="eyebrow">SKILL INTELLIGENCE</div>
+      <h2>Not "Python — 90%." Evidence you can trust.</h2>
+      <p>Every competency score is decomposed into the evidence that produced it — so a 90% actually means something.</p>
+    </div>
+    <div class="radar-card-grid">
+      <div class="card evidence-demo">
+        <div class="flex between center" style="margin-bottom:6px;">
+          <h3 style="font-size:20px;">Python</h3>
+          <span class="pill pill-teal">HIGH DEMAND</span>
+        </div>
+        <div class="flex gap20" style="margin-top:16px;">
+          <div><div class="mono" style="font-size:30px;font-weight:800;color:var(--teal-deep);">84<span style="font-size:16px;color:var(--ink-soft);">/100</span></div><div class="small muted">Competency</div></div>
+          <div><div class="mono" style="font-size:30px;font-weight:800;">93%</div><div class="small muted">Evidence confidence</div></div>
+          <div><div class="mono" style="font-size:30px;font-weight:800;">Recent</div><div class="small muted">Last verified</div></div>
+        </div>
+        <hr class="divider" style="margin:18px 0;">
+        <div class="eyebrow" style="margin-bottom:8px;">EVIDENCE</div>
+        <div><span class="evidence-tag">✓ Technical assessment</span><span class="evidence-tag">✓ Practical challenge</span><span class="evidence-tag">✓ Project</span><span class="evidence-tag">✓ Certification</span><span class="evidence-tag">✓ Industry feedback</span></div>
+      </div>
+      <div class="card card-pad" style="height:280px;" id="landingRadar"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="section-head">
+      <div class="eyebrow">ACADEMIA ↔ INDUSTRY COLLABORATION</div>
+      <h2>Requests and proposals that actually move.</h2>
+      <p>Institutions, faculty, and industry post real needs — VidyaSetu tracks them from draft to completion.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card card-pad"><span class="pill pill-amber">Industry → Institution</span><p style="margin-top:14px;font-weight:600;">"Looking for 20 students for a Computer Vision project."</p><p class="small muted" style="margin-top:8px;">Razorpay · Bengaluru · Posted 3 days ago</p></div>
+      <div class="card card-pad"><span class="pill pill-teal">Institution → Industry</span><p style="margin-top:14px;font-weight:600;">"Our AI department has 47 students with verified relevant skills."</p><p class="small muted" style="margin-top:8px;">Manipal University Jaipur</p></div>
+      <div class="card card-pad"><span class="pill pill-violet">Faculty → Industry</span><p style="margin-top:14px;font-weight:600;">"Available for research collaboration in Medical AI."</p><p class="small muted" style="margin-top:8px;">Dr. Kavita Sharma · BITS Pilani</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="radar-section">
+    <div class="section-head">
+      <div class="eyebrow">INDUSTRY SKILL RADAR</div>
+      <h2>See the gap before it becomes a crisis.</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card card-pad"><div class="flex between center"><b>MLOps</b><span class="pill pill-danger">↑ 32%</span></div><p class="small muted" style="margin-top:10px;">Demand: Very High &nbsp;·&nbsp; Academic Supply: Low</p><div class="progress-track" style="margin-top:12px;"><div class="progress-fill" style="width:22%;background:var(--danger);"></div></div><p class="small" style="margin-top:8px;color:var(--danger);font-weight:600;">Critical gap</p></div>
+      <div class="card card-pad"><div class="flex between center"><b>Cloud (AWS/Azure)</b><span class="pill pill-amber">↑ 18%</span></div><p class="small muted" style="margin-top:10px;">Demand: High &nbsp;·&nbsp; Academic Supply: Medium</p><div class="progress-track" style="margin-top:12px;"><div class="progress-fill" style="width:54%;background:var(--amber);"></div></div><p class="small" style="margin-top:8px;color:#8A5A19;font-weight:600;">Developing</p></div>
+      <div class="card card-pad"><div class="flex between center"><b>Python</b><span class="pill pill-teal">↑ 6%</span></div><p class="small muted" style="margin-top:10px;">Demand: Very High &nbsp;·&nbsp; Academic Supply: High</p><div class="progress-track" style="margin-top:12px;"><div class="progress-fill" style="width:86%;"></div></div><p class="small" style="margin-top:8px;color:var(--teal-deep);font-weight:600;">Strong</p></div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="ai">
+    <div class="section-head">
+      <div class="eyebrow">VIDYASETU AI</div>
+      <h2>Your academic &amp; industry intelligence assistant.</h2>
+      <p>Grounded in your verified platform data, and — when configured — current public industry information. Every answer is source-attributed.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card card-pad">
+        <div class="flex gap12 center" style="margin-bottom:14px;"><div class="dot" style="width:34px;height:34px;border-radius:9px;background:var(--violet-tint);color:var(--violet);display:flex;align-items:center;justify-content:center;">✨</div><b>"Find AI internships in Jaipur that match my skills."</b></div>
+        <p class="small muted">The assistant reasons over your verified skills, live VidyaSetu opportunities, and public listings — then returns matches with a why-it-matches breakdown and cited sources.</p>
+      </div>
+      <div class="card card-pad">
+        <div class="flex gap12 center" style="margin-bottom:14px;"><div class="dot" style="width:34px;height:34px;border-radius:9px;background:var(--teal-tint);color:var(--teal-deep);display:flex;align-items:center;justify-content:center;">🧭</div><b>Role-aware by design</b></div>
+        <p class="small muted">Students get learning guidance. Faculty get collaboration leads. Institutions get skill-weakness diagnostics. Industry gets candidate discovery. Same assistant, different intelligence.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head" style="margin-bottom:32px;"><div class="eyebrow">IMPACT, ILLUSTRATIVE</div><h2>What alignment looks like at scale.</h2></div>
+    <div class="impact-grid">
+      <div><div class="impact-num">72%</div><div class="small muted">Avg. career readiness</div></div>
+      <div><div class="impact-num">3.4×</div><div class="small muted">Faster skill-gap discovery</div></div>
+      <div><div class="impact-num">128</div><div class="small muted">Live industry collaborations</div></div>
+      <div><div class="impact-num">61%</div><div class="small muted">Internship participation</div></div>
+    </div>
+    <p class="disclaimer-note" style="text-align:center;margin-top:18px;">Figures shown are illustrative demo data for prototype purposes.</p>
+  </section>
+
+  <section class="section">
+    <div class="final-cta">
+      <h2>Ready to bridge the gap?</h2>
+      <p>Sign in as a student, faculty member, institution, or industry partner to explore the full experience.</p>
+      <div class="hero-ctas"><button class="btn btn-teal" onclick="goToRoleSelect()">Explore VidyaSetu →</button></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="brand" style="justify-content:center;font-size:15px;"><div class="brand-mark" style="width:26px;height:26px;font-size:11px;">VS</div>VidyaSetu</div>
+    <p style="margin-top:10px;">Prototype built for Smart India Hackathon 2026 · Institutions &amp; companies referenced are illustrative demo data.</p>
+  </footer>
+</div>
+
+<!-- ============================================================ ROLE SELECTION ============================================================ -->
+<div id="roleSelect">
+  <div class="role-wrap fade-in">
+    <button class="btn btn-outline btn-sm" onclick="goToLanding()">← Back</button>
+    <div style="margin-top:24px;">
+      <div class="eyebrow">SIGN IN TO VIDYASETU</div>
+      <h2 style="margin-top:8px;font-size:28px;">Choose how you're joining the bridge.</h2>
+      <p class="muted" style="margin-top:8px;">This is a demo environment — pick any role to explore its full experience.</p>
+    </div>
+    <div class="role-grid">
+      <button class="role-card" onclick="loginAs('student')"><div class="dot" style="background:var(--teal-tint);color:var(--teal-deep);">🎓</div><b>Student</b><span>Skill profile, learning paths, opportunities</span></button>
+      <button class="role-card" onclick="loginAs('faculty')"><div class="dot" style="background:var(--violet-tint);color:var(--violet);">🧑‍🏫</div><b>Faculty</b><span>Research, mentorship, industry collaboration</span></button>
+      <button class="role-card" onclick="loginAs('institution')"><div class="dot" style="background:var(--amber-tint);color:#8A5A19;">🏛️</div><b>Institution</b><span>Skill intelligence &amp; placement analytics</span></button>
+      <button class="role-card" onclick="loginAs('industry')"><div class="dot" style="background:var(--danger-tint);color:var(--danger);">🏭</div><b>Industry</b><span>Talent search &amp; academic partnerships</span></button>
+      <button class="role-card" onclick="loginAs('admin')"><div class="dot" style="background:var(--paper);color:var(--ink-soft);border:1px solid var(--line);">⚙️</div><b>Admin</b><span>Platform oversight &amp; moderation</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ APP SHELL ============================================================ -->
+<div id="app">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="brand-mark" style="width:28px;height:28px;font-size:13px;">VS</div>VidyaSetu</div>
+      <div class="sidebar-role" id="sidebarRoleLabel">STUDENT PORTAL</div>
+      <nav id="sidebarNav"></nav>
+      <div class="sidebar-foot">
+        <div class="flex between center">
+          <a href="#" class="switch-role-link" onclick="goToRoleSelect();return false;">Switch role</a>
+          <button class="theme-toggle" onclick="toggleTheme()" id="appThemeBtn">🌙</button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="search-box">🔍 <span id="searchPlaceholder">Search opportunities, people, skills…</span></div>
+        <div class="topbar-actions">
+          <button class="icon-btn" title="Notifications" onclick="toggleNotifPanel()">🔔<span class="notif-dot"></span></button>
+          <button class="icon-btn" title="Messages">✉️</button>
+          <div class="avatar" id="topAvatar">A</div>
+        </div>
+      </div>
+      <div class="content" id="content"></div>
+    </div>
+  </div>
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner" id="mobileNav"></div>
+  </nav>
+</div>
+
+<!-- AI Assistant -->
+<button id="askVidyaBtn" onclick="toggleAI()">✨ Ask Vidya</button>
+<div id="aiPanel">
+  <div class="ai-head">
+    <div><b>✨ VidyaSetu AI</b><br><span>Your academic &amp; industry assistant</span></div>
+    <button class="icon-btn" style="border:none;background:transparent;" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-body" id="aiBody"></div>
+  <div class="ai-input-row">
+    <input type="text" id="aiInput" placeholder="Ask anything…" onkeydown="if(event.key==='Enter')sendAI()">
+    <button class="ai-send" onclick="sendAI()">→</button>
+  </div>
+</div>
+
+<!-- Generic modal -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+/* ============================================================ SEED DATA ============================================================ */
+const DATA = {
+  student:{
+    name:"Aarav Sharma", initials:"AS", program:"B.Tech CSE, 3rd Year", institution:"Manipal University Jaipur",
+    readiness:78, verifiedSkills:14, activeApplications:6, industryOpps:23,
+    skills:[
+      {name:"Python",score:84,confidence:93,demand:"HIGH",verified:"Recent",evidence:["Technical assessment","Practical challenge","Project","Certification","Industry feedback"]},
+      {name:"Machine Learning",score:61,confidence:78,demand:"VERY HIGH",verified:"2 months ago",evidence:["Technical assessment","Project"]},
+      {name:"SQL",score:72,confidence:85,demand:"HIGH",verified:"Recent",evidence:["Practical challenge","Certification"]},
+      {name:"Docker",score:34,confidence:60,demand:"HIGH",verified:"4 months ago",evidence:["Self-declared"]},
+      {name:"MLOps",score:18,confidence:40,demand:"VERY HIGH",verified:"Not verified",evidence:["Self-declared"]},
+      {name:"Data Structures",score:88,confidence:95,demand:"HIGH",verified:"Recent",evidence:["Technical assessment","Practical challenge","Project","Certification"]},
+      {name:"React",score:70,confidence:80,demand:"MEDIUM",verified:"Recent",evidence:["Project","Certification"]},
+    ],
+    applications:[
+      {role:"AI/ML Intern",org:"Zoho Corporation",status:"Interview scheduled",date:"Sep 18"},
+      {role:"Backend Developer Intern",org:"Razorpay",status:"Under review",date:"Sep 10"},
+      {role:"Data Analyst — Winter Internship",org:"TCS",status:"Applied",date:"Sep 5"},
+      {role:"Frontend Engineer Trainee",org:"Zoho Corporation",status:"Shortlisted",date:"Aug 29"},
+    ],
+  },
+  faculty:{
+    name:"Dr. Kavita Sharma", initials:"KS", dept:"Computer Science & Engineering", institution:"BITS Pilani",
+    expertise:["Medical AI","Deep Learning","Computer Vision"],
+    stats:{students:112,mentees:8,activeCollabs:3,publications:24}
+  },
+  institution:{
+    name:"Manipal University Jaipur", initials:"MJ",
+    readiness:72, verifiedCoverage:68, internshipPart:61, industryEngagement:43,
+    departments:["Computer Science","AI & Data Science","Electronics","Mechanical","Cybersecurity"],
+    skillsHeat:["Python","ML","Cloud","MLOps","Cybersecurity","Data Analytics"],
+  },
+  industry:{
+    name:"Razorpay", initials:"RP", industry:"Fintech · Bengaluru",
+    stats:{activeJobs:9,talentMatches:142,collaborations:5,avgMatch:82}
+  },
+  admin:{
+    name:"Platform Admin", initials:"PA",
+    stats:{users:18420,institutions:214,industries:96,openOpps:1180}
+  }
+};
+
+const OPPORTUNITIES = [
+  {title:"AI/ML Engineering Intern",org:"Zoho Corporation",type:"Internship",loc:"Chennai, TN",mode:"Hybrid",stipend:"₹35,000/mo",match:92,have:["Python","Machine Learning","SQL"],missing:["Docker"],evidence:["Practical assessment","Project","Certification"]},
+  {title:"Backend Developer (Node.js)",org:"Razorpay",type:"Job",loc:"Bengaluru, KA",mode:"On-site",stipend:"₹9–14 LPA",match:78,have:["SQL","Data Structures"],missing:["Docker","Kubernetes"],evidence:["Project","Certification"]},
+  {title:"Data Analyst — Winter Program",org:"TCS",type:"Internship",loc:"Remote",mode:"Remote",stipend:"₹20,000/mo",match:85,have:["Python","SQL"],missing:["Power BI"],evidence:["Technical assessment","Project"]},
+  {title:"Cloud Infrastructure Project",org:"Infosys",type:"Industry Project",loc:"Pune, MH",mode:"Hybrid",stipend:"Certificate + Stipend",match:64,have:["Python"],missing:["AWS","Docker","MLOps"],evidence:["Project"]},
+  {title:"Frontend Engineer Trainee",org:"Wipro",type:"Job",loc:"Jaipur, RJ",mode:"On-site",stipend:"₹6–8 LPA",match:88,have:["React","Data Structures"],missing:["TypeScript"],evidence:["Project","Certification"]},
+  {title:"Research Assistant — Medical AI",org:"IIT Jaipur",type:"Research",loc:"Jaipur, RJ",mode:"On-site",stipend:"₹15,000/mo",match:70,have:["Python","Machine Learning"],missing:["Medical Imaging"],evidence:["Project"]},
+];
+
+const COLLABS = [
+  {title:"Computer Vision Project — 20 student positions",from:"Razorpay",to:"Institutions",type:"Industry → Institution",status:"Requested",participants:0,deadline:"Sep 30"},
+  {title:"47 students with verified AI skills available",from:"Manipal University Jaipur",to:"Industry partners",type:"Institution → Industry",status:"Active",participants:47,deadline:"Ongoing"},
+  {title:"Research collaboration in Medical AI",from:"Dr. Kavita Sharma",to:"Industry / Institutions",type:"Faculty → Industry",status:"Under Review",participants:2,deadline:"Oct 12"},
+  {title:"40-hour MLOps industry training cohort",from:"Infosys",to:"Manipal University Jaipur",type:"Industry → Institution",status:"Accepted",participants:86,deadline:"Started"},
+  {title:"Cybersecurity FDP for faculty",from:"Deloitte",to:"Faculty",type:"Industry → Faculty",status:"Draft",participants:0,deadline:"TBD"},
+];
+
+const CANDIDATES = [
+  {name:"Aarav Sharma",role:"AI/ML Engineer track",institution:"Manipal University Jaipur",match:92,capability:86,confidence:91,top:["Python","Machine Learning","SQL"],gap:["Docker"]},
+  {name:"Priya Menon",role:"Full-Stack Developer track",institution:"BITS Pilani",match:88,capability:81,confidence:89,top:["React","Node.js","MongoDB"],gap:["AWS"]},
+  {name:"Rohan Verma",role:"Data Science track",institution:"IIT Jaipur",match:81,capability:77,confidence:85,top:["Python","SQL","Statistics"],gap:["MLOps","Docker"]},
+  {name:"Sneha Reddy",role:"Cloud/DevOps track",institution:"Amity University",match:75,capability:70,confidence:80,top:["AWS","Linux"],gap:["Kubernetes"]},
+];
+
+const STATUS_COLORS = {Draft:"var(--ink-soft)",Requested:"var(--amber)","Under Review":"var(--violet)",Accepted:"var(--teal)",Active:"var(--teal-deep)",Completed:"var(--ink-soft)"};
+
+const AI_RESPONSES = {
+  student:{
+    "find internships matching my skills":{text:"Based on your verified Python, SQL and Machine Learning skills, you have 3 strong internship matches — the top being <b>AI/ML Engineering Intern at Zoho Corporation (92% match)</b>. You're missing Docker for a perfect match. Want me to open the Opportunities tab filtered to these?",source:"VidyaSetu Platform Data"},
+    "what should i learn next":{text:"Your highest-impact next move is <b>Docker</b>. Learning it (~35 hrs) would move your readiness from 72% to 81% and unlock an estimated <b>+39 opportunities</b>. MLOps is a close second given very high industry demand.",source:"VidyaSetu Platform Data + Industry Demand Signals"},
+    "find ai research opportunities":{text:"IIT Jaipur has an open Research Assistant position in Medical AI (70% match to your profile) supervised by faculty in your region. There's also a broader trend: Medical AI research postings are up 21% nationally this year.",source:"VidyaSetu Platform Data + Public Web"},
+  },
+  faculty:{
+    "find research collaborations":{text:"There are 2 open research collaboration requests matching your Medical AI and Deep Learning expertise — one from IIT Jaipur, one from a fintech industry lab exploring applied CV. Shall I open Collaboration Requests?",source:"VidyaSetu Platform Data"},
+    "find industry consultancy opportunities":{text:"3 companies are currently seeking academic consultants in your expertise areas, including a 40-hour applied ML workshop request from Infosys.",source:"VidyaSetu Platform Data"},
+  },
+  institution:{
+    "which skills are our biggest weaknesses":{text:"Your institution's critical gaps are <b>MLOps</b> (only 18% verified coverage) and <b>Docker</b> (34%), against very high industry demand. Recommended intervention: a 40-hour MLOps industry training program — simulated to move readiness from 64% to 81%.",source:"VidyaSetu Platform Data + Industry Skill Radar"},
+    "how is our placement readiness trending":{text:"Overall readiness is 72%, up 6 points this semester. Computer Science and AI departments are leading; Mechanical is lagging in verified digital-skill coverage.",source:"VidyaSetu Platform Data"},
+  },
+  industry:{
+    "find candidates with python and ml expertise":{text:"4 strong candidates found, led by Aarav Sharma (92% match, 93% evidence confidence) from Manipal University Jaipur. All have verified assessments and project evidence, not just self-reported skills.",source:"VidyaSetu Platform Data"},
+    "what skills are trending in the talent pool":{text:"Cloud and MLOps proficiency among final-year students is up 18% year-over-year, though still below your typical hiring bar. Python and SQL remain consistently strong across most partner institutions.",source:"VidyaSetu Platform Data + Public Web"},
+  },
+  admin:{
+    "platform overview":{text:"18,420 users across 214 institutions and 96 industry partners, with 1,180 open opportunities platform-wide. 3 moderation items are pending review.",source:"VidyaSetu Platform Data"},
+  }
+};
+
+const SUGGESTIONS = {
+  student:["Find internships matching my skills","What should I learn next?","Find AI research opportunities"],
+  faculty:["Find research collaborations","Find industry consultancy opportunities"],
+  institution:["Which skills are our biggest weaknesses?","How is our placement readiness trending?"],
+  industry:["Find candidates with Python and ML expertise","What skills are trending in the talent pool?"],
+  admin:["Platform overview"],
+};
+
+const NAV = {
+  student:[["dashboard","🏠","Dashboard"],["skills","🧬","Skill Profile"],["gaps","🎯","Skill Gap Analysis"],["simulator","⚡","Career Simulator"],["opportunities","💼","Opportunities"],["applications","📋","Applications"],["collaboration","🤝","Collaboration"],["portfolio","🪪","Portfolio"]],
+  faculty:[["dashboard","🏠","Dashboard"],["profile","🧑‍🏫","Expertise Profile"],["students","🎓","Students"],["collaboration","🤝","Collaboration"],["research","🔬","Research"],["opportunities","💼","Opportunities"]],
+  institution:[["dashboard","🏠","Dashboard"],["intelligence","🗺️","Skill Intelligence"],["radar","📡","Industry Skill Radar"],["simulator","⚡","Intervention Simulator"],["partnerships","🤝","Industry Partnerships"],["reports","📊","Reports"]],
+  industry:[["dashboard","🏠","Dashboard"],["talent","🔎","Talent Search"],["jobs","💼","Jobs & Internships"],["collaboration","🤝","Collaboration"],["analytics","📊","Analytics"]],
+  admin:[["dashboard","🏠","Dashboard"],["users","👥","Users"],["institutions","🏛️","Institutions"],["industries","🏭","Industries"],["moderation","🛡️","Moderation"],["audit","📜","Audit Logs"]],
+};
+const MOBILE_NAV_LIMIT = 5;
+
+/* ============================================================ STATE ============================================================ */
+let STATE = { role:null, view:'dashboard', theme:'light', aiHistory:{}, simSkill:null, gapRole:'AI / ML Engineer' };
+
+/* ============================================================ NAVIGATION ============================================================ */
+function goToLanding(){
+  document.getElementById('landing').style.display='block';
+  document.getElementById('roleSelect').style.display='none';
+  document.getElementById('app').style.display='none';
+  document.getElementById('askVidyaBtn').style.display='none';
+  document.getElementById('aiPanel').style.display='none';
+  renderLandingRadar();
+}
+function goToRoleSelect(){
+  document.getElementById('landing').style.display='none';
+  document.getElementById('roleSelect').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('askVidyaBtn').style.display='none';
+}
+function loginAs(role){
+  STATE.role = role;
+  STATE.view = 'dashboard';
+  document.getElementById('roleSelect').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('askVidyaBtn').style.display='flex';
+  renderShell();
+}
+function nav(view){ STATE.view = view; renderShell(); window.scrollTo(0,0); }
+
+function iconFor(role){ return {student:'🎓',faculty:'🧑‍🏫',institution:'🏛️',industry:'🏭',admin:'⚙️'}[role]; }
+function nameFor(role){ return DATA[role].name; }
+function initialsFor(role){ return DATA[role].initials; }
+
+/* ============================================================ SHELL RENDER ============================================================ */
+function renderShell(){
+  const role = STATE.role;
+  document.getElementById('sidebarRoleLabel').textContent = role.toUpperCase()+" PORTAL";
+  document.getElementById('topAvatar').textContent = initialsFor(role);
+  document.getElementById('searchPlaceholder').textContent = {
+    student:"Search opportunities, skills, mentors…", faculty:"Search students, collaborations, research…",
+    institution:"Search departments, partnerships, reports…", industry:"Search candidates, institutions, jobs…",
+    admin:"Search users, institutions, logs…"
+  }[role];
+
+  const items = NAV[role];
+  document.getElementById('sidebarNav').innerHTML = items.map(([id,ic,label])=>
+    `<a href="#" class="nav-item ${STATE.view===id?'active':''}" onclick="nav('${id}');return false;"><span class="ic">${ic}</span>${label}</a>`
+  ).join('');
+
+  const mobileItems = items.slice(0,MOBILE_NAV_LIMIT);
+  document.getElementById('mobileNav').innerHTML = mobileItems.map(([id,ic,label])=>
+    `<a href="#" class="mnav-item ${STATE.view===id?'active':''}" onclick="nav('${id}');return false;"><span>${ic}</span>${label.split(' ')[0]}</a>`
+  ).join('');
+
+  document.getElementById('content').innerHTML = renderView(role, STATE.view);
+  runPostRenderCharts(role, STATE.view);
+}
+
+function renderView(role, view){
+  const map = {
+    student:{dashboard:studentDashboard, skills:studentSkills, gaps:studentGaps, simulator:studentSimulator, opportunities:opportunitiesView, applications:studentApplications, collaboration:collaborationView, portfolio:studentPortfolio},
+    faculty:{dashboard:facultyDashboard, profile:facultyProfile, students:facultyStudents, collaboration:collaborationView, research:facultyResearch, opportunities:opportunitiesView},
+    institution:{dashboard:institutionDashboard, intelligence:institutionIntelligence, radar:institutionRadar, simulator:institutionSimulator, partnerships:collaborationView, reports:institutionReports},
+    industry:{dashboard:industryDashboard, talent:talentSearch, jobs:opportunitiesView, collaboration:collaborationView, analytics:industryAnalytics},
+    admin:{dashboard:adminDashboard, users:adminUsers, institutions:adminInstitutions, industries:adminIndustries, moderation:adminModeration, audit:adminAudit},
+  };
+  const fn = (map[role] && map[role][view]) || (()=> emptyState("Coming soon","This section is part of VidyaSetu's roadmap."));
+  return `<div class="fade-in">${fn()}</div>`;
+}
+
+function emptyState(title, sub){
+  return `<div class="card empty-state"><div class="ic">🧭</div><h3>${title}</h3><p class="small" style="margin-top:8px;">${sub}</p></div>`;
+}
+function pageHead(title, sub){
+  return `<div style="margin-bottom:22px;"><h2 style="font-size:24px;">${title}</h2><p class="muted small" style="margin-top:5px;">${sub}</p></div>`;
+}
+
+/* ============================================================ STUDENT VIEWS ============================================================ */
+function studentDashboard(){
+  const d = DATA.student;
+  return `
+  ${pageHead("Good morning, "+d.name.split(' ')[0]+".","Here's how your academic and industry journey is progressing.")}
+  <div class="grid g4" style="margin-bottom:18px;">
+    ${statCard("🎯","Career Readiness",d.readiness+"%","var(--teal-tint)","var(--teal-deep)","+4 this month")}
+    ${statCard("🧬","Verified Skills",d.verifiedSkills,"var(--violet-tint)","var(--violet)","2 newly verified")}
+    ${statCard("📋","Active Applications",d.activeApplications,"var(--amber-tint)","#8A5A19","1 interview scheduled")}
+    ${statCard("💼","Industry Opportunities",d.industryOpps,"var(--danger-tint)","var(--danger)","5 new this week")}
+  </div>
+  <div class="grid" style="grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:18px;">
+    <div class="hero-move">
+      <div class="eyebrow">YOUR HIGHEST-IMPACT NEXT MOVE</div>
+      <h3>Learn Docker</h3>
+      <p style="color:#C7D1E3;margin-top:6px;font-size:14px;">Closing this single gap reshapes your opportunity landscape more than any other skill right now.</p>
+      <div class="metrics">
+        <div><b>+39</b><span>Potential opportunity gain</span></div>
+        <div><b>72% → 81%</b><span>Readiness projection</span></div>
+        <div><b>35 hrs</b><span>Estimated effort</span></div>
+      </div>
+      <button class="btn btn-teal" onclick="nav('simulator')">Open Career Simulator →</button>
+    </div>
+    <div class="card card-pad">
+      <div class="eyebrow" style="margin-bottom:14px;">UPCOMING ASSESSMENTS</div>
+      ${assessmentRow("Docker Fundamentals","Practical Challenge","Sep 20")}
+      ${assessmentRow("SQL Advanced Queries","Technical Assessment","Sep 24")}
+      ${assessmentRow("MLOps Foundations","Certification Track","Oct 2")}
+    </div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.4fr 1fr;gap:16px;">
+    <div class="card card-pad">
+      <div class="flex between center" style="margin-bottom:16px;"><b>Skill Confidence Overview</b><a href="#" class="small" style="color:var(--teal-deep);" onclick="nav('skills');return false;">View full profile →</a></div>
+      ${d.skills.slice(0,5).map(s=>skillRow(s)).join('')}
+    </div>
+    <div class="card card-pad">
+      <div class="eyebrow" style="margin-bottom:14px;">RECENT INDUSTRY FEEDBACK</div>
+      <p class="small" style="line-height:1.7;">"Aarav's project submission for the Cloud Infrastructure challenge showed strong fundamentals — recommend deepening containerization skills."</p>
+      <p class="small muted" style="margin-top:10px;">— Infosys Assessment Panel, Aug 28</p>
+      <hr class="divider" style="margin:16px 0;">
+      <div class="eyebrow" style="margin-bottom:10px;">RECOMMENDED OPPORTUNITIES</div>
+      ${OPPORTUNITIES.slice(0,2).map(o=>`<div class="flex between center" style="padding:8px 0;"><span class="small" style="font-weight:600;">${o.title}</span><span class="pill pill-teal">${o.match}%</span></div>`).join('')}
+      <button class="btn btn-outline btn-sm" style="width:100%;margin-top:10px;" onclick="nav('opportunities')">Browse all opportunities</button>
+    </div>
+  </div>`;
+}
+function statCard(icon,label,val,bg,color,trend){
+  return `<div class="card stat-card"><div class="top"><div class="stat-icon" style="background:${bg};color:${color};">${icon}</div></div><div class="stat-val">${val}</div><div class="stat-label">${label}</div><div class="stat-trend" style="color:${color};">${trend}</div></div>`;
+}
+function assessmentRow(title,type,date){
+  return `<div class="flex between center" style="padding:10px 0;border-bottom:1px solid var(--line);"><div><div class="small" style="font-weight:600;">${title}</div><div class="small muted">${type}</div></div><span class="pill pill-neutral">${date}</span></div>`;
+}
+function skillRow(s){
+  const color = s.score>=70?'var(--teal)':s.score>=45?'var(--amber)':'var(--danger)';
+  return `<div class="skill-row"><div class="skill-name">${s.name}</div><div class="skill-bar"><div class="progress-track"><div class="progress-fill" style="width:${s.score}%;background:${color};"></div></div></div><div class="skill-score">${s.score}</div></div>`;
+}
+
+function studentSkills(){
+  const d = DATA.student;
+  return `
+  ${pageHead("Skill Intelligence Profile","Evidence-driven competency, not self-reported claims.")}
+  <div class="grid" style="grid-template-columns:1fr 340px;gap:18px;">
+    <div>
+      ${d.skills.map(s=>skillDetailCard(s)).join('')}
+    </div>
+    <div class="card card-pad" style="height:fit-content;position:sticky;top:80px;">
+      <div class="eyebrow" style="margin-bottom:14px;">SKILL RADAR</div>
+      <div id="studentRadarChart" style="height:220px;"></div>
+      <hr class="divider" style="margin:18px 0;">
+      <div class="eyebrow" style="margin-bottom:10px;">EVIDENCE TIMELINE</div>
+      <div class="small muted" style="line-height:2;">
+        Sep 8 — Python certification added<br>
+        Aug 22 — SQL practical challenge passed<br>
+        Aug 4 — ML project reviewed by industry panel<br>
+        Jul 15 — Data Structures assessment (95%)
+      </div>
+    </div>
+  </div>`;
+}
+function skillDetailCard(s){
+  const demandColor = s.demand==='VERY HIGH'?'pill-danger':s.demand==='HIGH'?'pill-amber':'pill-neutral';
+  return `<div class="card card-pad" style="margin-bottom:14px;">
+    <div class="flex between center">
+      <h3 style="font-size:18px;">${s.name}</h3>
+      <span class="pill ${demandColor}">${s.demand} DEMAND</span>
+    </div>
+    <div class="flex gap20" style="margin-top:16px;">
+      <div><div class="mono" style="font-size:26px;font-weight:800;color:var(--teal-deep);">${s.score}<span style="font-size:14px;color:var(--ink-soft);">/100</span></div><div class="small muted">Competency</div></div>
+      <div><div class="mono" style="font-size:26px;font-weight:800;">${s.confidence}%</div><div class="small muted">Evidence confidence</div></div>
+      <div><div class="mono" style="font-size:22px;font-weight:800;">${s.verified}</div><div class="small muted">Last verified</div></div>
+    </div>
+    <div style="margin-top:14px;">${s.evidence.map(e=>`<span class="evidence-tag">✓ ${e}</span>`).join('')}</div>
+  </div>`;
+}
+
+function studentGaps(){
+  const d = DATA.student;
+  const targets = {
+    "AI / ML Engineer":[["Python",84,"strong"],["Machine Learning",61,"developing"],["SQL",72,"developing"],["Docker",34,"critical"],["MLOps",18,"critical"]],
+    "Full-Stack Developer":[["React",70,"strong"],["Data Structures",88,"strong"],["SQL",72,"developing"],["Docker",34,"critical"]],
+    "Cloud Engineer":[["Python",84,"strong"],["Docker",34,"critical"],["MLOps",18,"critical"],["SQL",72,"developing"]],
+  };
+  const rows = targets[STATE.gapRole];
+  return `
+  ${pageHead("Skill Gap Analysis","Pick a target role to see exactly where you stand.")}
+  <div class="card card-pad" style="margin-bottom:18px;">
+    <div class="eyebrow" style="margin-bottom:10px;">TARGET ROLE</div>
+    <div class="sim-select-row">
+      ${Object.keys(targets).map(r=>`<button class="sim-chip ${STATE.gapRole===r?'active':''}" onclick="setGapRole('${r}')">${r}</button>`).join('')}
+    </div>
+  </div>
+  <div class="grid g3" style="margin-bottom:18px;">
+    ${gapColumn("STRONG","var(--teal)",rows.filter(r=>r[2]==='strong'))}
+    ${gapColumn("DEVELOPING","var(--amber)",rows.filter(r=>r[2]==='developing'))}
+    ${gapColumn("CRITICAL GAP","var(--danger)",rows.filter(r=>r[2]==='critical'))}
+  </div>
+  <div class="card card-pad">
+    <div class="eyebrow" style="margin-bottom:14px;">PERSONALIZED LEARNING PATH</div>
+    ${["Machine Learning improvement","Docker fundamentals","MLOps foundations","Industry project (applied)","Reassessment & verification"].map((s,i)=>`
+      <div class="flex gap12 center" style="padding:10px 0;border-bottom:1px solid var(--line);">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--teal-tint);color:var(--teal-deep);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;">${i+1}</div>
+        <span class="small" style="font-weight:600;">${s}</span>
+      </div>`).join('')}
+  </div>`;
+}
+function setGapRole(r){ STATE.gapRole = r; renderShell(); }
+function gapColumn(label,color,rows){
+  return `<div class="card card-pad">
+    <div class="eyebrow" style="color:${color};margin-bottom:12px;">${label}</div>
+    ${rows.length? rows.map(r=>`<div class="flex between center" style="padding:7px 0;"><span class="small" style="font-weight:600;">${r[0]}</span><span class="small mono">${r[1]}</span></div>`).join('') : '<p class="small muted">None</p>'}
+  </div>`;
+}
+
+function studentSimulator(){
+  const options = {
+    Docker:{effort:35, current:24, projected:63, readiness:[72,81], demand:"HIGH"},
+    Kubernetes:{effort:48, current:24, projected:52, readiness:[72,78], demand:"HIGH"},
+    AWS:{effort:60, current:24, projected:58, readiness:[72,79], demand:"VERY HIGH"},
+    MLOps:{effort:70, current:24, projected:71, readiness:[72,84], demand:"VERY HIGH"},
+    SQL:{effort:20, current:24, projected:34, readiness:[72,75], demand:"HIGH"},
+  };
+  const sel = STATE.simSkill || 'Docker';
+  const r = options[sel];
+  return `
+  ${pageHead("Career Impact Simulator","\"What skill should I learn next?\" — an illustrative projection, not a guarantee.")}
+  <div class="card card-pad" style="margin-bottom:18px;">
+    <div class="eyebrow" style="margin-bottom:10px;">CHOOSE A SKILL</div>
+    <div class="sim-select-row">
+      ${Object.keys(options).map(k=>`<button class="sim-chip ${sel===k?'active':''}" onclick="setSimSkill('${k}')">${k}</button>`).join('')}
+    </div>
+    <div class="sim-result">
+      <div class="flex g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+        <div><div class="big">${r.current} → ${r.projected}</div><div class="small muted">Opportunities (+${r.projected-r.current})</div></div>
+        <div><div class="big">${r.readiness[0]}% → ${r.readiness[1]}%</div><div class="small muted">Readiness projection</div></div>
+        <div><div class="big">${r.effort} hrs</div><div class="small muted">Estimated learning effort</div></div>
+      </div>
+      <p class="small muted" style="margin-top:16px;">Industry demand for <b>${sel}</b>: ${r.demand}. This is an estimated simulation based on your current profile and platform demand signals.</p>
+    </div>
+  </div>
+  <div class="card card-pad">
+    <div class="eyebrow" style="margin-bottom:14px;">COMPARE: DOCKER vs KUBERNETES vs AWS</div>
+    <div id="simCompareChart" style="height:230px;"></div>
+  </div>`;
+}
+function setSimSkill(s){ STATE.simSkill = s; renderShell(); }
+
+function opportunitiesView(){
+  return `
+  ${pageHead("Opportunity Discovery","Jobs, internships, industry projects, and research — matched to verified evidence.")}
+  <div class="flex gap12 wrap" style="margin-bottom:18px;">
+    <div class="search-box" style="max-width:320px;">🔍 <span class="muted">Search opportunities…</span></div>
+    <span class="pill pill-neutral">📍 All locations</span>
+    <span class="pill pill-neutral">🏢 Work mode</span>
+    <span class="pill pill-neutral">🧬 Skills</span>
+    <span class="pill pill-neutral">💰 Stipend/Salary</span>
+  </div>
+  <div class="grid g2">
+    ${OPPORTUNITIES.map(o=>opportunityCard(o)).join('')}
+  </div>`;
+}
+function opportunityCard(o){
+  return `<div class="card opp-card">
+    <div class="flex gap16" style="align-items:flex-start;">
+      <div class="opp-match">${o.match}%</div>
+      <div style="flex:1;">
+        <div class="flex between" style="align-items:flex-start;">
+          <div><h3 style="font-size:17px;">${o.title}</h3><p class="small muted" style="margin-top:3px;">${o.org} · ${o.loc}</p></div>
+          <span class="pill pill-neutral">${o.type}</span>
+        </div>
+        <p class="small muted" style="margin-top:8px;">${o.mode} · ${o.stipend}</p>
+        <div style="margin-top:12px;"><div class="eyebrow" style="margin-bottom:6px;">WHY YOU MATCH</div>${o.have.map(h=>`<span class="evidence-tag">✓ ${h}</span>`).join('')}</div>
+        <div style="margin-top:10px;"><div class="eyebrow" style="margin-bottom:6px;">MISSING</div>${o.missing.map(m=>`<span class="chip-missing">△ ${m}</span>`).join('')}</div>
+        <div style="margin-top:10px;"><div class="eyebrow" style="margin-bottom:6px;">EVIDENCE</div>${o.evidence.map(e=>`<span class="evidence-tag">✓ ${e}</span>`).join('')}</div>
+        <div class="flex gap8" style="margin-top:16px;">
+          <button class="btn btn-primary btn-sm" onclick="showOppModal('${o.title.replace(/'/g,"")}')">Apply now</button>
+          <button class="btn btn-outline btn-sm" onclick="showOppModal('${o.title.replace(/'/g,"")}')">How to strengthen fit</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function showOppModal(title){
+  const o = OPPORTUNITIES.find(x=>x.title.replace(/'/g,"")===title) || OPPORTUNITIES[0];
+  document.getElementById('modalContent').innerHTML = `
+    <div class="flex between center" style="margin-bottom:16px;"><h3 style="font-size:20px;">${o.title}</h3><button class="icon-btn" style="border:none;" onclick="closeModal()">✕</button></div>
+    <p class="small muted">${o.org} · ${o.loc} · ${o.mode}</p>
+    <div class="eyebrow" style="margin:16px 0 8px;">HOW TO BECOME A STRONGER CANDIDATE</div>
+    <ol class="small" style="padding-left:18px;line-height:2;">
+      <li>Learn ${o.missing[0]||'the missing skill'}</li>
+      <li>Complete a deployment / applied project</li>
+      <li>Reassess and verify with VidyaSetu</li>
+    </ol>
+    <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="closeModal()">Submit application</button>
+  `;
+  document.getElementById('overlay').style.display='flex';
+}
+function closeModal(){ document.getElementById('overlay').style.display='none'; }
+
+function studentApplications(){
+  const d = DATA.student;
+  const statusColor = s=>({"Interview scheduled":"var(--teal)","Under review":"var(--amber)","Applied":"var(--ink-soft)","Shortlisted":"var(--violet)"})[s];
+  return `${pageHead("Application Tracker","Every application you've submitted, in one place.")}
+  <div class="card">
+    ${d.applications.map(a=>`<div class="flex between center" style="padding:16px 22px;border-bottom:1px solid var(--line);">
+      <div><div style="font-weight:600;">${a.role}</div><div class="small muted">${a.org} · Applied ${a.date}</div></div>
+      <span class="pill" style="background:transparent;border:1px solid var(--line);"><span class="status-dot" style="background:${statusColor(a.status)};"></span>${a.status}</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function studentPortfolio(){
+  const d = DATA.student;
+  return `${pageHead("Digital Portfolio","Your evidence-backed professional profile — shareable with recruiters.")}
+  <div class="card card-pad" style="margin-bottom:16px;">
+    <div class="flex gap16 center">
+      <div class="avatar" style="width:64px;height:64px;font-size:22px;">${d.initials}</div>
+      <div><h3 style="font-size:20px;">${d.name}</h3><p class="small muted">${d.program} · ${d.institution}</p></div>
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="card card-pad"><div class="eyebrow" style="margin-bottom:10px;">VERIFIED SKILLS</div>${d.skills.filter(s=>s.verified!=='Not verified').map(s=>`<div class="flex between" style="padding:6px 0;"><span class="small">${s.name}</span><span class="pill pill-teal">Verified</span></div>`).join('')}</div>
+    <div class="card card-pad"><div class="eyebrow" style="margin-bottom:10px;">SELF-DECLARED</div>${d.skills.filter(s=>s.verified==='Not verified').map(s=>`<div class="flex between" style="padding:6px 0;"><span class="small">${s.name}</span><span class="pill pill-neutral">Self-declared</span></div>`).join('')||'<p class="small muted">None</p>'}</div>
+  </div>
+  <div class="card card-pad" style="margin-top:16px;"><div class="eyebrow" style="margin-bottom:10px;">PROJECTS &amp; CERTIFICATIONS</div>
+    <p class="small" style="line-height:1.9;">• Cloud Infrastructure Deployment — Industry-reviewed project (Infosys)<br>• Python for Data Science — Certification, verified<br>• Predictive Maintenance ML Model — Capstone project</p>
+  </div>`;
+}
+
+/* ============================================================ FACULTY VIEWS ============================================================ */
+function facultyDashboard(){
+  const d = DATA.faculty;
+  return `${pageHead("Welcome back, "+d.name,d.dept+" · "+d.institution)}
+  <div class="grid g4" style="margin-bottom:18px;">
+    ${statCard("🎓","Students Mentored",d.stats.students,"var(--teal-tint)","var(--teal-deep)","+6 this semester")}
+    ${statCard("🧭","Active Mentees",d.stats.mentees,"var(--violet-tint)","var(--violet)","2 new requests")}
+    ${statCard("🤝","Active Collaborations",d.stats.activeCollabs,"var(--amber-tint)","#8A5A19","1 pending review")}
+    ${statCard("📄","Publications",d.stats.publications,"var(--danger-tint)","var(--danger)","1 under review")}
+  </div>
+  <div class="grid" style="grid-template-columns:1.3fr 1fr;gap:16px;">
+    <div class="card card-pad"><div class="eyebrow" style="margin-bottom:14px;">OPEN INDUSTRY OPPORTUNITIES FOR YOU</div>
+      ${opportunityCard(OPPORTUNITIES[3])}
+      ${opportunityCard(OPPORTUNITIES[5])}
+    </div>
+    <div class="card card-pad"><div class="eyebrow" style="margin-bottom:14px;">EXPERTISE AREAS</div>${d.expertise.map(e=>`<span class="evidence-tag">${e}</span>`).join('')}
+      <hr class="divider" style="margin:16px 0;">
+      <div class="eyebrow" style="margin-bottom:10px;">AVAILABILITY</div>
+      <p class="small">Open for research collaboration, FDPs, and consultancy — 4 hrs/week</p>
+    </div>
+  </div>`;
+}
+function facultyProfile(){
+  const d = DATA.faculty;
+  return `${pageHead("Expertise Profile","How industry and institutions discover you.")}
+  <div class="card card-pad">
+    <div class="flex gap16 center"><div class="avatar" style="width:64px;height:64px;font-size:20px;">${d.initials}</div><div><h3 style="font-size:20px;">${d.name}</h3><p class="small muted">${d.dept} · ${d.institution}</p></div></div>
+    <hr class="divider" style="margin:18px 0;">
+    <div class="eyebrow" style="margin-bottom:10px;">RESEARCH AREAS</div>${d.expertise.map(e=>`<span class="evidence-tag">${e}</span>`).join('')}
+    <div class="eyebrow" style="margin:18px 0 10px;">INDUSTRY EXPERIENCE</div>
+    <p class="small">Consulting engagements with 2 healthcare-AI startups; visiting researcher, applied ML lab (2023).</p>
+  </div>`;
+}
+function facultyStudents(){
+  return `${pageHead("Students","Mentees and advisees under your guidance.")}
+  <div class="card">${["Aarav Sharma — AI/ML track","Priya Menon — Full-Stack track","Rohan Verma — Data Science track"].map(s=>`<div class="flex between center" style="padding:16px 22px;border-bottom:1px solid var(--line);"><span class="small" style="font-weight:600;">${s}</span><button class="btn btn-outline btn-sm">View profile</button></div>`).join('')}</div>`;
+}
+function facultyResearch(){
+  return `${pageHead("Research Collaboration","Active and proposed research initiatives.")}
+  <div class="grid g2">
+    ${collabCard(COLLABS[2])}
+    ${collabCard(COLLABS[4])}
+  </div>`;
+}
+
+/* ============================================================ INSTITUTION VIEWS ============================================================ */
+function institutionDashboard(){
+  const d = DATA.institution;
+  return `${pageHead(d.name,"Institutional skill intelligence & placement readiness overview.")}
+  <div class="grid g4" style="margin-bottom:18px;">
+    ${statCard("🎯","Student Readiness",d.readiness+"%","var(--teal-tint)","var(--teal-deep)","+3 pts this term")}
+    ${statCard("🧬","Verified Skill Coverage",d.verifiedCoverage+"%","var(--violet-tint)","var(--violet)","Stable")}
+    ${statCard("💼","Internship Participation",d.internshipPart+"%","var(--amber-tint)","#8A5A19","+8 pts")}
+    ${statCard("🤝","Industry Engagement",d.industryEngagement+"%","var(--danger-tint)","var(--danger)","5 new partners")}
+  </div>
+  <div class="card card-pad" style="margin-bottom:16px;">
+    <div class="eyebrow" style="margin-bottom:14px;">SKILL HEATMAP — DEPARTMENTS × SKILLS</div>
+    ${heatmapTable()}
+  </div>
+  <div class="card card-pad"><div class="eyebrow" style="margin-bottom:14px;">RECOMMENDED INTERVENTION</div>
+    <p style="font-weight:600;">Launch a 40-hour MLOps industry program.</p>
+    <p class="small muted" style="margin-top:6px;">Projected to move 86 → 214 ready students. <a href="#" style="color:var(--teal-deep);" onclick="nav('simulator');return false;">Open simulator →</a></p>
+  </div>`;
+}
+function heatmapTable(){
+  const depts = DATA.institution.departments;
+  const skills = DATA.institution.skillsHeat;
+  const vals = {
+    "Computer Science":[88,72,58,40,55,66],"AI & Data Science":[91,84,62,48,50,78],
+    "Electronics":[54,30,66,22,60,42],"Mechanical":[38,20,44,15,35,28],"Cybersecurity":[60,35,52,30,92,48]
+  };
+  function color(v){ if(v>=75) return '#0E8F82'; if(v>=55) return '#4FAF9E'; if(v>=35) return '#D98E3B'; return '#C4453A'; }
+  let html = `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:560px;"><thead><tr><th style="text-align:left;padding:8px;font-size:12.5px;color:var(--ink-soft);">Department</th>${skills.map(s=>`<th style="font-size:12px;color:var(--ink-soft);padding:6px;">${s}</th>`).join('')}</tr></thead><tbody>`;
+  depts.forEach(dep=>{
+    html += `<tr><td style="padding:8px;font-size:13px;font-weight:600;white-space:nowrap;">${dep}</td>`;
+    (vals[dep]||[]).forEach(v=>{ html += `<td style="padding:5px;"><div class="heatcell" style="background:${color(v)};">${v}</div></td>`; });
+    html += `</tr>`;
+  });
+  html += `</tbody></table></div>`;
+  return html;
+}
+function institutionIntelligence(){
+  return `${pageHead("Skill Intelligence","Deep view of verified competency across departments.")}
+  <div class="card card-pad">${heatmapTable()}</div>
+  <div class="grid g3" style="margin-top:16px;">
+    ${DATA.institution.skillsHeat.slice(0,3).map(s=>`<div class="card card-pad"><b>${s}</b><div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:${Math.random()*40+40|0}%;"></div></div></div>`).join('')}
+  </div>`;
+}
+function institutionRadar(){
+  return `${pageHead("Industry Skill Radar","Demand vs. academic supply, tracked over time.")}
+  <div class="grid g3">
+    <div class="card card-pad"><div class="flex between center"><b>MLOps</b><span class="pill pill-danger">↑ 32%</span></div><p class="small muted" style="margin-top:10px;">Demand: Very High · Supply: Low</p><p class="small" style="margin-top:10px;color:var(--danger);font-weight:600;">CRITICAL — Recommended: 40-hour industry program</p></div>
+    <div class="card card-pad"><div class="flex between center"><b>Cloud</b><span class="pill pill-amber">↑ 18%</span></div><p class="small muted" style="margin-top:10px;">Demand: High · Supply: Medium</p><p class="small" style="margin-top:10px;color:#8A5A19;font-weight:600;">Developing</p></div>
+    <div class="card card-pad"><div class="flex between center"><b>Python</b><span class="pill pill-teal">↑ 6%</span></div><p class="small muted" style="margin-top:10px;">Demand: Very High · Supply: High</p><p class="small" style="margin-top:10px;color:var(--teal-deep);font-weight:600;">Strong</p></div>
+    <div class="card card-pad"><div class="flex between center"><b>Cybersecurity</b><span class="pill pill-amber">↑ 14%</span></div><p class="small muted" style="margin-top:10px;">Demand: High · Supply: Medium</p></div>
+    <div class="card card-pad"><div class="flex between center"><b>Data Analytics</b><span class="pill pill-teal">↑ 9%</span></div><p class="small muted" style="margin-top:10px;">Demand: High · Supply: High</p></div>
+    <div class="card card-pad"><div class="flex between center"><b>Kubernetes</b><span class="pill pill-danger">↑ 27%</span></div><p class="small muted" style="margin-top:10px;">Demand: High · Supply: Very Low</p></div>
+  </div>`;
+}
+function institutionSimulator(){
+  return `${pageHead("College Intervention Simulator","Model the impact of a training program before you launch it.")}
+  <div class="card card-pad">
+    <div class="grid g2">
+      <div><div class="eyebrow" style="margin-bottom:8px;">SKILL</div><div class="sim-chip active" style="display:inline-block;">MLOps</div></div>
+      <div><div class="eyebrow" style="margin-bottom:8px;">PROGRAM</div><div class="sim-chip active" style="display:inline-block;">40-hour industry training</div></div>
+    </div>
+    <div class="sim-result" style="margin-top:20px;">
+      <div class="grid g3">
+        <div><div class="big">86 → 214</div><div class="small muted">Ready students</div></div>
+        <div><div class="big">+128</div><div class="small muted">Potential opportunities</div></div>
+        <div><div class="big">64% → 81%</div><div class="small muted">Readiness</div></div>
+      </div>
+      <p class="small muted" style="margin-top:16px;">Estimate based on historical program outcomes and current skill-gap distribution. Not a guarantee.</p>
+    </div>
+  </div>`;
+}
+function institutionReports(){
+  return `${pageHead("Reports","Export-ready institutional analytics.")}
+  <div class="card"><div style="padding:16px 22px;border-bottom:1px solid var(--line);" class="flex between center"><span class="small" style="font-weight:600;">Semester Placement Readiness Report</span><button class="btn btn-outline btn-sm">Download</button></div>
+  <div style="padding:16px 22px;border-bottom:1px solid var(--line);" class="flex between center"><span class="small" style="font-weight:600;">Department Skill Coverage Report</span><button class="btn btn-outline btn-sm">Download</button></div>
+  <div style="padding:16px 22px;" class="flex between center"><span class="small" style="font-weight:600;">Industry Partnership Summary</span><button class="btn btn-outline btn-sm">Download</button></div></div>`;
+}
+
+/* ============================================================ INDUSTRY VIEWS ============================================================ */
+function industryDashboard(){
+  const d = DATA.industry;
+  return `${pageHead(d.name,d.industry+" · Talent & collaboration overview")}
+  <div class="grid g4" style="margin-bottom:18px;">
+    ${statCard("💼","Active Job Postings",d.stats.activeJobs,"var(--teal-tint)","var(--teal-deep)","2 closing soon")}
+    ${statCard("🔎","Talent Matches",d.stats.talentMatches,"var(--violet-tint)","var(--violet)","+18 this week")}
+    ${statCard("🤝","Active Collaborations",d.stats.collaborations,"var(--amber-tint)","#8A5A19","1 new request")}
+    ${statCard("📈","Avg. Candidate Match",d.stats.avgMatch+"%","var(--danger-tint)","var(--danger)","Stable")}
+  </div>
+  <div class="grid" style="grid-template-columns:1.3fr 1fr;gap:16px;">
+    <div class="card card-pad"><div class="eyebrow" style="margin-bottom:14px;">TOP MATCHING CANDIDATES</div>${CANDIDATES.slice(0,3).map(c=>candidateCard(c)).join('')}</div>
+    <div class="card card-pad"><div class="eyebrow" style="margin-bottom:14px;">CAMPUS COLLABORATION REQUESTS</div>${collabCard(COLLABS[0])}</div>
+  </div>`;
+}
+function talentSearch(){
+  return `${pageHead("Talent Search","Discover verified candidates by skill, not by keyword.")}
+  <div class="flex gap12 wrap" style="margin-bottom:18px;">
+    <span class="pill pill-neutral">🧬 Skills</span><span class="pill pill-neutral">📊 Competency</span><span class="pill pill-neutral">✅ Evidence confidence</span><span class="pill pill-neutral">🎓 Institution</span><span class="pill pill-neutral">📍 Location</span>
+  </div>
+  <div class="grid g2">${CANDIDATES.map(c=>candidateCard(c,true)).join('')}</div>`;
+}
+function candidateCard(c,full){
+  return `<div class="card card-pad" style="margin-bottom:14px;">
+    <div class="flex between" style="align-items:flex-start;">
+      <div class="flex gap12 center"><div class="avatar">${c.name.split(' ').map(n=>n[0]).join('')}</div><div><b>${c.name}</b><div class="small muted">${c.role}${full? ' · '+c.institution : ''}</div></div></div>
+      <span class="pill pill-teal">${c.match}% Match</span>
+    </div>
+    <div class="grid g2" style="margin-top:14px;">
+      <div><div class="small muted">Verified Capability</div><div style="font-weight:700;font-family:var(--font-display);">${c.capability}%</div></div>
+      <div><div class="small muted">Evidence Confidence</div><div style="font-weight:700;font-family:var(--font-display);">${c.confidence}%</div></div>
+    </div>
+    <div style="margin-top:12px;">${c.top.map(t=>`<span class="evidence-tag">${t}</span>`).join('')}${c.gap.map(g=>`<span class="chip-missing">△ ${g}</span>`).join('')}</div>
+    ${full? `<div class="flex gap8" style="margin-top:14px;"><button class="btn btn-primary btn-sm">Shortlist</button><button class="btn btn-outline btn-sm">Invite</button><button class="btn btn-outline btn-sm">Request assessment</button></div>` : ''}
+  </div>`;
+}
+function industryAnalytics(){
+  return `${pageHead("Analytics","How your hiring pipeline aligns with academic supply.")}
+  <div class="card card-pad"><div id="industryAnalyticsChart" style="height:240px;"></div></div>`;
+}
+
+/* ============================================================ ADMIN VIEWS ============================================================ */
+function adminDashboard(){
+  const d = DATA.admin.stats;
+  return `${pageHead("Platform Overview","VidyaSetu-wide health and moderation status.")}
+  <div class="grid g4">
+    ${statCard("👥","Total Users",d.users.toLocaleString(),"var(--teal-tint)","var(--teal-deep)","+312 this week")}
+    ${statCard("🏛️","Institutions",d.institutions,"var(--violet-tint)","var(--violet)","+3 pending approval")}
+    ${statCard("🏭","Industry Partners",d.industries,"var(--amber-tint)","#8A5A19","+2 this week")}
+    ${statCard("💼","Open Opportunities",d.openOpps.toLocaleString(),"var(--danger-tint)","var(--danger)","Stable")}
+  </div>`;
+}
+function adminUsers(){ return `${pageHead("Users","Manage platform accounts.")}<div class="card">${["Aarav Sharma — Student","Dr. Kavita Sharma — Faculty","Manipal University Jaipur — Institution","Razorpay — Industry"].map(u=>`<div class="flex between center" style="padding:14px 22px;border-bottom:1px solid var(--line);"><span class="small">${u}</span><button class="btn btn-outline btn-sm">Manage</button></div>`).join('')}</div>`; }
+function adminInstitutions(){ return `${pageHead("Institutions","Registered academic institutions.")}<div class="card">${["Manipal University Jaipur","BITS Pilani","IIT Jaipur","Amity University","Rajasthan Technical University"].map(u=>`<div class="flex between center" style="padding:14px 22px;border-bottom:1px solid var(--line);"><span class="small">${u}</span><span class="pill pill-teal">Verified</span></div>`).join('')}</div>`; }
+function adminIndustries(){ return `${pageHead("Industries","Registered industry partners.")}<div class="card">${["TCS","Infosys","Wipro","Zoho","Razorpay","Accenture","Deloitte"].map(u=>`<div class="flex between center" style="padding:14px 22px;border-bottom:1px solid var(--line);"><span class="small">${u}</span><span class="pill pill-teal">Verified</span></div>`).join('')}</div>`; }
+function adminModeration(){ return `${pageHead("Moderation","Flagged content and pending reviews.")}<div class="card">${["Skill evidence dispute — Rohan Verma","Duplicate institution listing flagged","Opportunity posting under review — Wipro"].map(u=>`<div class="flex between center" style="padding:14px 22px;border-bottom:1px solid var(--line);"><span class="small">${u}</span><button class="btn btn-outline btn-sm">Review</button></div>`).join('')}</div>`; }
+function adminAudit(){ return `${pageHead("Audit Logs","System-wide activity trail.")}<div class="card">${["09:14 — Institution 'Amity University' approved","08:52 — Skill assessment provider updated","08:20 — New industry partner onboarded: Deloitte"].map(u=>`<div class="small" style="padding:12px 22px;border-bottom:1px solid var(--line);font-family:var(--font-mono);">${u}</div>`).join('')}</div>`; }
+
+/* ============================================================ COLLABORATION (SHARED) ============================================================ */
+function collaborationView(){
+  return `${pageHead("Academia ↔ Industry Collaboration","Requests and proposals moving from draft to completion.")}
+  <div class="grid g2">${COLLABS.map(c=>collabCard(c)).join('')}</div>`;
+}
+function collabCard(c){
+  return `<div class="card collab-card">
+    <div class="flex between" style="align-items:flex-start;">
+      <span class="pill pill-neutral">${c.type}</span>
+      <span class="pill" style="background:transparent;border:1px solid var(--line);"><span class="status-dot" style="background:${STATUS_COLORS[c.status]};"></span>${c.status}</span>
+    </div>
+    <p style="font-weight:600;margin-top:12px;">${c.title}</p>
+    <p class="small muted" style="margin-top:6px;">${c.from} → ${c.to}</p>
+    <div class="flex between center" style="margin-top:14px;">
+      <span class="small muted">${c.participants} participants · Deadline: ${c.deadline}</span>
+      <button class="btn btn-outline btn-sm">Open</button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================ CHARTS (dependency-free inline SVG) ============================================================ */
+function chartColors(){
+  const dark = STATE.theme==='dark';
+  return { grid: dark? '#212C42':'#E2E5E4', text: dark? '#9AA7BD':'#3A4A63', teal: dark? '#33C6B4':'#0E8F82', amber: dark? '#E8A857':'#D98E3B', violet: dark?'#8A8EF5':'#5B5FEF' };
+}
+function escXml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function svgRadar(labels, data, color, textColor, gridColor){
+  const size=260, cx=size/2, cy=size/2, R=84;
+  const n = labels.length;
+  const angle = i => (Math.PI*2*i/n) - Math.PI/2;
+  let gridSvg='';
+  [25,50,75,100].forEach(r=>{
+    const pts = labels.map((_,i)=>{
+      const a=angle(i), rad=R*r/100;
+      return (cx+rad*Math.cos(a)).toFixed(1)+','+(cy+rad*Math.sin(a)).toFixed(1);
+    }).join(' ');
+    gridSvg += `<polygon points="${pts}" fill="none" stroke="${gridColor}" stroke-width="1"/>`;
+  });
+  labels.forEach((_,i)=>{
+    const a=angle(i), x2=cx+R*Math.cos(a), y2=cy+R*Math.sin(a);
+    gridSvg += `<line x1="${cx}" y1="${cy}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${gridColor}" stroke-width="1"/>`;
+  });
+  const dataPts = data.map((v,i)=>{ const a=angle(i), rad=R*Math.min(v,100)/100; return (cx+rad*Math.cos(a)).toFixed(1)+','+(cy+rad*Math.sin(a)).toFixed(1); }).join(' ');
+  let dataSvg = `<polygon points="${dataPts}" fill="${color}33" stroke="${color}" stroke-width="2"/>`;
+  data.forEach((v,i)=>{ const a=angle(i), rad=R*Math.min(v,100)/100, x=cx+rad*Math.cos(a), y=cy+rad*Math.sin(a);
+    dataSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${color}"/>`; });
+  const labelSvg = labels.map((l,i)=>{
+    const a=angle(i), lx=cx+(R+26)*Math.cos(a), ly=cy+(R+26)*Math.sin(a);
+    let anchor = Math.cos(a)>0.3? 'start' : Math.cos(a)<-0.3? 'end' : 'middle';
+    return `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="9" fill="${textColor}" text-anchor="${anchor}" dominant-baseline="middle">${escXml(l)}</text>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${size} ${size+8}" style="width:100%;height:100%;">${gridSvg}${dataSvg}${labelSvg}</svg>`;
+}
+
+function svgGroupedBar(categories, series, textColor, gridColor){
+  const W=560,H=260, padL=8,padR=8,padT=14,padB=68;
+  const chartW=W-padL-padR, chartH=H-padT-padB;
+  const maxVal = Math.max(1, ...series.flatMap(s=>s.data)) * 1.15;
+  const m=categories.length, s=series.length;
+  const groupW = chartW/m, barW = groupW/(s+1.3);
+  let bars='', grid='';
+  [0,0.25,0.5,0.75,1].forEach(f=>{
+    const y = padT+chartH-(chartH*f);
+    grid += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="${gridColor}" stroke-width="1"/>`;
+  });
+  categories.forEach((cat,i)=>{
+    series.forEach((ser,j)=>{
+      const val = ser.data[i];
+      const h = (val/maxVal)*chartH;
+      const x = padL + i*groupW + (j+0.4)*barW;
+      const y = padT+chartH-h;
+      bars += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW*0.85}" height="${h.toFixed(1)}" rx="3" fill="${ser.color}"/>`;
+    });
+    const cx = padL + i*groupW + groupW/2;
+    bars += `<text x="${cx.toFixed(1)}" y="${padT+chartH+16}" font-size="9" fill="${textColor}" text-anchor="middle">${escXml(cat)}</text>`;
+  });
+  const legend = series.map((ser,j)=>{
+    const lx = padL + j*140;
+    return `<rect x="${lx}" y="${H-14}" width="9" height="9" rx="2" fill="${ser.color}"/><text x="${lx+13}" y="${H-6}" font-size="9" fill="${textColor}">${escXml(ser.label)}</text>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%;">${grid}${bars}${legend}</svg>`;
+}
+
+function svgLineChart(categories, series, textColor, gridColor){
+  const W=560,H=260, padL=30,padR=14,padT=14,padB=44;
+  const chartW=W-padL-padR, chartH=H-padT-padB;
+  const maxVal = Math.max(1, ...series.flatMap(s=>s.data)) * 1.15;
+  const n = categories.length;
+  const xFor = i => padL + (n===1?0:(i*(chartW/(n-1))));
+  const yFor = v => padT+chartH-(v/maxVal)*chartH;
+  let grid='';
+  [0,0.25,0.5,0.75,1].forEach(f=>{
+    const y = padT+chartH-(chartH*f);
+    grid += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="${gridColor}" stroke-width="1"/>`;
+    grid += `<text x="2" y="${(y+3).toFixed(1)}" font-size="8" fill="${textColor}">${Math.round(maxVal*f)}</text>`;
+  });
+  const xLabels = categories.map((c,i)=>`<text x="${xFor(i).toFixed(1)}" y="${H-24}" font-size="9" fill="${textColor}" text-anchor="middle">${escXml(c)}</text>`).join('');
+  let lines = series.map(ser=>{
+    const pts = ser.data.map((v,i)=>`${xFor(i).toFixed(1)},${yFor(v).toFixed(1)}`).join(' ');
+    const dots = ser.data.map((v,i)=>`<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="2.6" fill="${ser.color}"/>`).join('');
+    return `<polyline points="${pts}" fill="none" stroke="${ser.color}" stroke-width="2.2"/>${dots}`;
+  }).join('');
+  const legend = series.map((ser,j)=>{
+    const lx = padL + j*170;
+    return `<rect x="${lx}" y="${H-14}" width="9" height="9" rx="2" fill="${ser.color}"/><text x="${lx+13}" y="${H-6}" font-size="9" fill="${textColor}">${escXml(ser.label)}</text>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%;">${grid}${lines}${xLabels}${legend}</svg>`;
+}
+
+function renderLandingRadar(){
+  const el = document.getElementById('landingRadar'); if(!el) return;
+  const c = chartColors();
+  el.innerHTML = svgRadar(['Syntax & Fundamentals','Data Structures','Libraries & Tooling','Applied Projects','Debugging','Best Practices'],[90,85,80,84,82,78], c.teal, c.text, c.grid);
+}
+function runPostRenderCharts(role,view){
+  const c = chartColors();
+  if(role==='student' && view==='skills'){
+    const el = document.getElementById('studentRadarChart'); if(!el) return;
+    const skills = DATA.student.skills;
+    el.innerHTML = svgRadar(skills.map(s=>s.name), skills.map(s=>s.score), c.teal, c.text, c.grid);
+  }
+  if(role==='student' && view==='simulator'){
+    const el = document.getElementById('simCompareChart'); if(!el) return;
+    el.innerHTML = svgGroupedBar(['Opportunity Gain','Readiness Gain','Effort (hrs)'],[
+      {label:'Docker',data:[39,9,35],color:c.teal},
+      {label:'Kubernetes',data:[28,6,48],color:c.amber},
+      {label:'AWS',data:[34,7,60],color:c.violet},
+    ], c.text, c.grid);
+  }
+  if(role==='industry' && view==='analytics'){
+    const el = document.getElementById('industryAnalyticsChart'); if(!el) return;
+    el.innerHTML = svgLineChart(['Apr','May','Jun','Jul','Aug','Sep'],[
+      {label:'Demand (postings)',data:[40,46,52,58,64,70],color:c.amber},
+      {label:'Verified supply (matches)',data:[30,33,38,44,49,58],color:c.teal},
+    ], c.text, c.grid);
+  }
+}
+
+/* ============================================================ THEME ============================================================ */
+function toggleTheme(){
+  STATE.theme = STATE.theme==='light'? 'dark':'light';
+  document.documentElement.setAttribute('data-theme', STATE.theme);
+  const icon = STATE.theme==='dark'? '☀️':'🌙';
+  const b1=document.getElementById('landingThemeBtn'), b2=document.getElementById('appThemeBtn');
+  if(b1) b1.textContent = icon;
+  if(b2) b2.textContent = icon;
+  renderLandingRadar();
+  if(document.getElementById('app').style.display==='block'){ runPostRenderCharts(STATE.role, STATE.view); }
+}
+
+/* ============================================================ AI ASSISTANT ============================================================ */
+function toggleAI(){
+  const panel = document.getElementById('aiPanel');
+  const open = panel.style.display==='flex';
+  panel.style.display = open? 'none':'flex';
+  if(!open){ initAIBody(); }
+}
+function initAIBody(){
+  const role = STATE.role || 'student';
+  if(!STATE.aiHistory[role]){
+    STATE.aiHistory[role] = [{who:'bot', text:"👋 Hi, I'm VidyaSetu AI — your academic &amp; industry intelligence assistant. How can I help?"}];
+  }
+  renderAIBody();
+}
+function renderAIBody(){
+  const role = STATE.role || 'student';
+  const hist = STATE.aiHistory[role] || [];
+  const body = document.getElementById('aiBody');
+  body.innerHTML = hist.map(m=>{
+    if(m.who==='bot'){ return `<div class="ai-msg bot">${m.text}${m.source? `<br><span class="ai-source">🔗 ${m.source}</span>`:''}</div>`; }
+    return `<div class="ai-msg user">${m.text}</div>`;
+  }).join('') + `<div style="margin-top:6px;">${(SUGGESTIONS[role]||[]).map(s=>`<button class="ai-suggest" onclick="askSuggestion('${s.replace(/'/g,"")}')">${s}</button>`).join('')}</div>`;
+  body.scrollTop = body.scrollHeight;
+}
+function askSuggestion(text){ document.getElementById('aiInput').value = text; sendAI(); }
+function sendAI(){
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if(!text) return;
+  const role = STATE.role || 'student';
+  STATE.aiHistory[role].push({who:'user', text});
+  const key = text.toLowerCase().replace(/[?.!]/g,'').trim();
+  let resp = (AI_RESPONSES[role] && Object.entries(AI_RESPONSES[role]).find(([k])=> key.includes(k) || k.includes(key)));
+  if(resp){
+    STATE.aiHistory[role].push({who:'bot', text:resp[1].text, source:resp[1].source});
+  } else {
+    STATE.aiHistory[role].push({who:'bot', text:"I've noted that. In this prototype I can speak in depth about skill gaps, opportunities, collaborations and demand trends — try one of the suggestions below, or ask about a specific skill or opportunity.", source:"VidyaSetu Platform Data"});
+  }
+  input.value='';
+  renderAIBody();
+}
+
+/* ============================================================ NOTIF PANEL (lightweight) ============================================================ */
+function toggleNotifPanel(){
+  document.getElementById('modalContent').innerHTML = `
+    <div class="flex between center" style="margin-bottom:16px;"><h3 style="font-size:18px;">Notifications</h3><button class="icon-btn" style="border:none;" onclick="closeModal()">✕</button></div>
+    <div class="small" style="line-height:2.2;">
+      🎯 Your Docker readiness assessment is due Sep 20<br>
+      💼 3 new opportunities match your profile<br>
+      🤝 A collaboration request was accepted<br>
+      ✅ Your Python certification was verified
+    </div>`;
+  document.getElementById('overlay').style.display='flex';
+}
+
+/* ============================================================ INIT ============================================================ */
+window.addEventListener('DOMContentLoaded', ()=>{
+  goToLanding();
+});
+</script>
+</body>
+</html>
