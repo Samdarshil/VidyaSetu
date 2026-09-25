@@ -1,0 +1,30 @@
+# Environments & secrets
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Local databases (SQLite dev fallback)
+*.db
+*.sqlite
+*.sqlite3
+
+# Editor / OS metadata
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Node (not currently used, harmless to ignore preemptively)
+node_modules/
+
+# Logs
+*.log
