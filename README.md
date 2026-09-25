@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎓🌉🏭 VidyaSetu
+# 🎓 VidyaSetu 🌉
 
 ### Bridging Academia & Industry — Evidence-Driven Skill Intelligence
 
